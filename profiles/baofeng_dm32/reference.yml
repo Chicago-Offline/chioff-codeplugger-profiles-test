@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Chicago-Offline/codeplugger/558b2834a1be95be42c62c7a99e9cae2827ea4ca/schemas/profile-0.1.schema.json
+
+$schema: "https://raw.githubusercontent.com/Chicago-Offline/codeplugger/558b2834a1be95be42c62c7a99e9cae2827ea4ca/schemas/profile-0.1.schema.json"
+version: "0.1"
+id: "chioff_dm32_reference"
+name: "Chicago Offline DM-32 reference"
+radio: "baofeng_dm32"
+zones:
+  - id: "reference"
+    name: "Reference"
+    assignments:
+      - "asg_fixture_reference_simplex"
+      - "asg_wx1"

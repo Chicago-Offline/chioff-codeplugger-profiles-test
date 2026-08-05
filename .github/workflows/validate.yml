@@ -1,0 +1,48 @@
+name: Validate profiles
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out profiles
+        uses: actions/checkout@v4
+
+      - name: Check out Codeplugger contract
+        uses: actions/checkout@v4
+        with:
+          repository: Chicago-Offline/codeplugger
+          ref: 558b2834a1be95be42c62c7a99e9cae2827ea4ca
+          path: codeplugger
+
+      - name: Check out SSRF-Lite
+        uses: actions/checkout@v4
+        with:
+          repository: Chicago-Offline/ssrf-lite
+          path: ssrf-lite
+
+      - name: Check out reference overlay
+        uses: actions/checkout@v4
+        with:
+          repository: Chicago-Offline/chioff-ssrf-private
+          path: chioff-ssrf-private
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Install Codeplugger
+        run: uv sync --directory codeplugger --locked
+
+      - name: Validate DM-32 reference profile
+        run: >-
+          codeplugger/.venv/bin/codeplugger-profile
+          profiles/baofeng_dm32/reference.yml
+          --ssrf-root ssrf-lite/ssrf
+          --ssrf-root chioff-ssrf-private/ssrf
+          --radio-root codeplugger/radios
