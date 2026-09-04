@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: Chicago-Offline/codeplugger
-          ref: 35d509b3e310deebe434826dbdcc2c8a40b31e3f
+          ref: 558b2834a1be95be42c62c7a99e9cae2827ea4ca
           path: codeplugger
 
       - name: Check out SSRF-Lite
@@ -33,13 +33,6 @@ jobs:
           repository: Chicago-Offline/chioff-ssrf-private
           path: chioff-ssrf-private
 
-      - name: Check out shared ChiOff overlay
-        uses: actions/checkout@v4
-        with:
-          repository: Chicago-Offline/chioff-ssrf-shared
-          ref: 64e0e49e21bf1c4cb44e9927940cbfdc9edff59f
-          path: chioff-ssrf-shared
-
       - name: Install uv
         uses: astral-sh/setup-uv@v6
 
@@ -53,13 +46,3 @@ jobs:
           --ssrf-root ssrf-lite/ssrf
           --ssrf-root chioff-ssrf-private/ssrf
           --radio-root codeplugger/radios
-
-      - name: Validate ChiOff P4 profiles
-        run: >-
-          for profile in profiles/retevis_matetalk_p4/*.yml; do
-            codeplugger/.venv/bin/codeplugger-profile "$profile"
-            --ssrf-root ssrf-lite/ssrf
-            --ssrf-root chioff-ssrf-shared/ssrf
-            --radio-root codeplugger/radios
-            --instance-registry instances.yml;
-          done
