@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Chicago-Offline/codeplugger/f2d262cbff8edbd0c2e080459809a871b1b06857/schemas/profile-0.1.schema.json
+
+$schema: "https://raw.githubusercontent.com/Chicago-Offline/codeplugger/f2d262cbff8edbd0c2e080459809a871b1b06857/schemas/profile-0.1.schema.json"
+version: "0.1"
+id: "chioff_uv5r_mini_reference"
+name: "Chicago Offline UV-5R Mini reference"
+radio: "baofeng_uv5r_mini"
+zones:
+  - id: "reference"
+    name: "Reference"
+    assignments:
+      - "asg_fixture_reference_simplex"
+      - "asg_wx1"

@@ -9,10 +9,14 @@ generated codeplugs.
 
 ## Profiles
 
-`profiles/baofeng_dm32/reference.yml` is the minimal end-to-end fixture for
-the Baofeng DM-32 (`baofeng_dm32`). Profile `chioff_dm32_reference` resolves
-`asg_fixture_reference_simplex` and `asg_wx1` from `ssrf-lite` plus
-`chioff-ssrf-test` into one ordered `Reference` zone.
+| Fixture | Radio | Profile id | Notes |
+| --- | --- | --- | --- |
+| `profiles/baofeng_dm32/reference.yml` | `baofeng_dm32` | `chioff_dm32_reference` | Resolves `asg_fixture_reference_simplex` and `asg_wx1` into one `Reference` zone. Generates qdmr YAML in CI. |
+| `profiles/baofeng_uv5r_mini/reference.yml` | `baofeng_uv5r_mini` | `chioff_uv5r_mini_reference` | Same two assignments, FM only (this radio is FM-only). Generates CHIRP CSV in CI. |
+| `profiles/baofeng_uv5r_mini/negative-dmr.yml` | `baofeng_uv5r_mini` | `chioff_uv5r_mini_negative_dmr` | Negative fixture: resolves a DMR assignment (`asg_dmr_smpx_446500` from `ssrf-lite`) against the FM-only UV-5R Mini. Must fail validation with an explicit unsupported-mode error; CI asserts the failure. |
+
+All assignment IDs resolve from `ssrf-lite` plus the `chioff-ssrf-test`
+reference overlay — no real or personal data.
 
 Every profile is validated by CI on push and pull request. A new
 profile that CI does not validate is worse than no profile, so add a matching

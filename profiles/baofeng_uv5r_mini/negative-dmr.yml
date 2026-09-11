@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Chicago-Offline/codeplugger/f2d262cbff8edbd0c2e080459809a871b1b06857/schemas/profile-0.1.schema.json
+#
+# Negative fixture: the UV-5R Mini is FM-only by codeplugger policy (see
+# `radios/baofeng_uv5r_mini/capabilities.json` -> `modes` in codeplugger).
+# Selecting a DMR assignment against this radio must fail profile validation
+# with an explicit unsupported-mode error. CI asserts the failure; this
+# profile is expected to be rejected and must never resolve successfully.
+
+$schema: "https://raw.githubusercontent.com/Chicago-Offline/codeplugger/f2d262cbff8edbd0c2e080459809a871b1b06857/schemas/profile-0.1.schema.json"
+version: "0.1"
+id: "chioff_uv5r_mini_negative_dmr"
+name: "Chicago Offline UV-5R Mini negative DMR fixture (expected validation failure)"
+radio: "baofeng_uv5r_mini"
+zones:
+  - id: "reference"
+    name: "Reference"
+    assignments:
+      - "asg_dmr_smpx_446500"
