@@ -9,11 +9,12 @@ generated codeplugs.
 
 ## Profiles
 
-| Profile | Radio | Profile `id` | Zones | Assignments | SSRF roots | Purpose |
-|---|---|---|---|---|---|---|
-| `profiles/baofeng_dm32/reference.yml` | Baofeng DM-32 (`baofeng_dm32`) | `chioff_dm32_reference` | 1 (`Reference`) | `asg_fixture_reference_simplex`, `asg_wx1` | `chioff-ssrf-private`, `ssrf-lite` | Minimal end-to-end fixture: explicit assignment IDs resolving across two overlays into one ordered zone |
+`profiles/baofeng_dm32/reference.yml` is the minimal end-to-end fixture for
+the Baofeng DM-32 (`baofeng_dm32`). Profile `chioff_dm32_reference` resolves
+`asg_fixture_reference_simplex` and `asg_wx1` from `ssrf-lite` plus
+`chioff-ssrf-test` into one ordered `Reference` zone.
 
-Every profile in the table is validated by CI on push and pull request. A new
+Every profile is validated by CI on push and pull request. A new
 profile that CI does not validate is worse than no profile, so add a matching
 step in `.github/workflows/validate.yml` in the same change.
 
@@ -25,9 +26,26 @@ With sibling checkouts of the three repositories:
 ../codeplugger/.venv/bin/codeplugger-profile \
   profiles/baofeng_dm32/reference.yml \
   --ssrf-root ../ssrf-lite/ssrf \
-  --ssrf-root ../chioff-ssrf-private/ssrf \
+  --ssrf-root ../chioff-ssrf-test/ssrf \
   --radio-root ../codeplugger/radios
 ```
+
+Generate the disposable qdmr YAML used by the DM-32 headless path with the
+same roots and precedence:
+
+```bash
+../codeplugger/.venv/bin/codeplugger-profile \
+  profiles/baofeng_dm32/reference.yml \
+  --ssrf-root ../ssrf-lite/ssrf \
+  --ssrf-root ../chioff-ssrf-test/ssrf \
+  --radio-root ../codeplugger/radios \
+  --output-format qdmr-yaml \
+  > dm32-reference.yaml
+```
+
+CI validates both profile resolution and qdmr YAML generation. The generated
+file is retained briefly as a workflow artifact for inspection; it is not a
+source file and must not be committed.
 
 The reference profile uses explicit SSRF assignment IDs. Changes to RF data or
 display names belong in an SSRF overlay rather than this repository.
