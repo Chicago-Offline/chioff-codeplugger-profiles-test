@@ -70,3 +70,55 @@ jobs:
           name: dm32-reference-qdmr-yaml
           path: ${{ runner.temp }}/dm32-reference.yaml
           retention-days: 1
+
+      - name: Validate UV-5R Mini reference profile
+        run: >-
+          codeplugger/.venv/bin/codeplugger-profile
+          profiles/baofeng_uv5r_mini/reference.yml
+          --ssrf-root ssrf-lite/ssrf
+          --ssrf-root chioff-ssrf-test/ssrf
+          --radio-root codeplugger/radios
+
+      - name: Generate UV-5R Mini CHIRP CSV
+        run: >-
+          codeplugger/.venv/bin/codeplugger-profile
+          profiles/baofeng_uv5r_mini/reference.yml
+          --ssrf-root ssrf-lite/ssrf
+          --ssrf-root chioff-ssrf-test/ssrf
+          --radio-root codeplugger/radios
+          --output-format chirp-csv
+          > "$RUNNER_TEMP/uv5r-mini-reference.csv"
+
+      - name: Check generated UV-5R Mini CHIRP CSV
+        run: >-
+          codeplugger/.venv/bin/python -c
+          'from pathlib import Path;
+          lines = Path("${{ runner.temp }}/uv5r-mini-reference.csv").read_text().splitlines();
+          assert lines[0].startswith("Location,Name,Frequency");
+          assert len(lines) > 1'
+
+      - name: Upload generated UV-5R Mini CHIRP CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: uv5r-mini-reference-chirp-csv
+          path: ${{ runner.temp }}/uv5r-mini-reference.csv
+          retention-days: 1
+
+      - name: Check UV-5R Mini rejects DMR (unsupported mode)
+        run: |
+          set +e
+          output=$(codeplugger/.venv/bin/codeplugger-profile \
+            profiles/baofeng_uv5r_mini/negative-dmr.yml \
+            --ssrf-root ssrf-lite/ssrf \
+            --ssrf-root chioff-ssrf-test/ssrf \
+            --radio-root codeplugger/radios 2>&1)
+          status=$?
+          echo "$output"
+          if [ "$status" -eq 0 ]; then
+            echo "::error::expected UV-5R Mini + DMR assignment to fail validation, but it succeeded"
+            exit 1
+          fi
+          if ! echo "$output" | grep -q "does not support"; then
+            echo "::error::expected an explicit unsupported-mode error, got: $output"
+            exit 1
+          fi
